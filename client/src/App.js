@@ -22,10 +22,18 @@ export function App() {
     socket.connect();
 
     socket.on("chat message", (msg) => {
-      console.log("message: " + msg);
+      // console.log("message: " + msg);
       setMessages((messages) => [...messages, msg]);
     });
   }, []);
+
+  const disconnect = () => {
+    socket.disconnect();
+  };
+
+  const connect = () => {
+    socket.connect();
+  };
 
   return (
     <div className={styles.wrapper}>
@@ -69,6 +77,8 @@ export function App() {
           >
             送出
           </button>
+          <button onClick={() => disconnect()}>離開聊天室</button>
+          <button onClick={() => connect()}>進入聊天室</button>
         </div>
       </div>
     </div>
