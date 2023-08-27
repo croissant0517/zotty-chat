@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
 import { io } from "socket.io-client";
 
 import styles from "./App.module.scss";
