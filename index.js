@@ -19,7 +19,9 @@ app.get("/", (req, res) => {
 });
 
 io.on("connection", (socket) => {
-  console.log({ socket }, "a user connected");
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
 });
 
 server.listen(port, () => console.log("Node server listening on port " + port));

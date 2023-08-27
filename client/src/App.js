@@ -1,45 +1,71 @@
 import React, { useEffect, useState } from "react";
 import styles from "./App.module.scss";
+import { io } from "socket.io-client";
+// import Message from "./components/message";
+
+const URL =
+  process.env.NODE_ENV === "production"
+    ? undefined
+    : "http://192.168.0.121:8000/";
+// :"http://localhost:8000/";
+export const socket = io(URL, {
+  autoConnect: false,
+});
 
 export function App() {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    socket.connect();
+
+    //   socket.on("chat message", (msg) => {
+    //     console.log({ msg }, messages);
+    //     setMessages([...messages, msg]);
+    //   });
+    socket.on("chat message", (msg) => {
+      setMessages((prev) => [...prev, msg]);
+    });
+  }, []);
 
   return (
     <div className={styles.wrapper}>
       <h1 className={styles.test}>Hello world!</h1>
       <div className={styles.chatWrapper}>
         <div className={styles.chatBox}>
-          {messages.map((item, index) => {
-            return (
-              <div
-                key={"message-" + index}
-                className={`${styles.message} ${
-                  index % 2 === 0 ? styles.right : ""
-                }`}
-              >
-                {item}
-              </div>
-            );
-          })}
+          <div>
+            {messages.map((item, index) => {
+              return (
+                <div
+                  key={"message-" + index}
+                  className={`${styles.message} ${
+                    index % 2 === 0 ? styles.right : ""
+                  }`}
+                >
+                  {item}
+                </div>
+              );
+            })}
+          </div>
         </div>
         <div className={styles.textBox}>
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
             onKeyDown={(e) => {
-              console.log(e.key);
-              if (e.key === "Enter") {
+              if (e.key === "Enter" && text) {
                 // Do Something, may be an 'Undo' operation
-                setMessages([...messages, text]);
+                socket.emit("chat message", text);
                 setText("");
               }
             }}
           />
           <button
             onClick={() => {
-              setMessages([...messages, text]);
-              setText("");
+              if (text) {
+                socket.emit("chat message", text);
+                setText("");
+              }
             }}
           >
             送出
