@@ -8,7 +8,7 @@ import { io } from "socket.io-client";
 const URL =
   process.env.NODE_ENV === "production"
     ? undefined
-    : "http://192.168.0.121:8000/";
+    : "http://192.168.0.125:8000/";
 // :"http://localhost:8000/";
 export const socket = io(URL, {
   autoConnect: false,
