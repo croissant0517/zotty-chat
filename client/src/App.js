@@ -29,7 +29,6 @@ export function App() {
     // socket.connect();
 
     socket.on("chat message", (msg) => {
-      // console.log("message: " + msg);
       setMessages((messages) => [...messages, msg]);
     });
   }, []);
@@ -68,12 +67,15 @@ export function App() {
           <input
             value={text}
             onChange={(e) => setText(e.target.value)}
-            onKeyDown={(e) => {
+            onKeyUp={(e) => {
               if (e.key === "Enter" && text) {
                 // Do Something, may be an 'Undo' operation
                 socket.emit("chat message", text);
                 setText("");
               }
+            }}
+            onCompositionEnd={(e) => {
+              if (e.key === "Enter") return;
             }}
           />
           <Button
@@ -93,17 +95,8 @@ export function App() {
           >
             離開聊天室
           </Button>
-          <Button
-            onClick={() => {
-              handleDialog();
-              // connect();
-            }}
-          >
-            進入聊天室
-          </Button>
           <Dialog
             onClose={(event, reason) => {
-              console.log(reason);
               if (reason !== "backdropClick") handleDialog();
             }}
             open={open}
@@ -116,9 +109,11 @@ export function App() {
               />
               <Button
                 onClick={() => {
-                  socket.emit("setname", userName);
-                  handleDialog();
-                  connect();
+                  if (userName) {
+                    socket.emit("setname", userName);
+                    handleDialog();
+                    connect();
+                  }
                 }}
               >
                 進入聊天室
