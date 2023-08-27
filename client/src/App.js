@@ -3,12 +3,16 @@ import { io } from "socket.io-client";
 
 import styles from "./App.module.scss";
 import { io } from "socket.io-client";
+import { Button } from "@mui/material";
+import Dialog from "@mui/material/Dialog";
+import DialogContent from "@mui/material/DialogContent";
+
 // import Message from "./components/message";
 
 const URL =
   process.env.NODE_ENV === "production"
     ? undefined
-    : "http://192.168.0.125:8000/";
+    : "http://192.168.0.121:8000/";
 // :"http://localhost:8000/";
 export const socket = io(URL, {
   autoConnect: false,
@@ -17,9 +21,12 @@ export const socket = io(URL, {
 export function App() {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
+  const [open, setOpen] = useState(true);
+
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    socket.connect();
+    // socket.connect();
 
     socket.on("chat message", (msg) => {
       // console.log("message: " + msg);
@@ -34,6 +41,8 @@ export function App() {
   const connect = () => {
     socket.connect();
   };
+
+  const handleDialog = () => setOpen((prev) => !prev);
 
   return (
     <div className={styles.wrapper}>
@@ -67,7 +76,7 @@ export function App() {
               }
             }}
           />
-          <button
+          <Button
             onClick={() => {
               if (text) {
                 socket.emit("chat message", text);
@@ -76,9 +85,46 @@ export function App() {
             }}
           >
             送出
-          </button>
-          <button onClick={() => disconnect()}>離開聊天室</button>
-          <button onClick={() => connect()}>進入聊天室</button>
+          </Button>
+          <Button
+            onClick={() => {
+              disconnect();
+            }}
+          >
+            離開聊天室
+          </Button>
+          <Button
+            onClick={() => {
+              handleDialog();
+              // connect();
+            }}
+          >
+            進入聊天室
+          </Button>
+          <Dialog
+            onClose={(event, reason) => {
+              console.log(reason);
+              if (reason !== "backdropClick") handleDialog();
+            }}
+            open={open}
+          >
+            <DialogContent>
+              請輸入名稱:
+              <input
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+              <Button
+                onClick={() => {
+                  socket.emit("setname", userName);
+                  handleDialog();
+                  connect();
+                }}
+              >
+                進入聊天室
+              </Button>
+            </DialogContent>
+          </Dialog>
         </div>
       </div>
     </div>
