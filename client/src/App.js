@@ -24,7 +24,18 @@ export function App() {
           })}
         </div>
         <div className={styles.textBox}>
-          <input value={text} onChange={(e) => setText(e.target.value)} />
+          <input
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            onKeyDown={(e) => {
+              console.log(e.key);
+              if (e.key === "Enter") {
+                // Do Something, may be an 'Undo' operation
+                setMessages([...messages, text]);
+                setText("");
+              }
+            }}
+          />
           <button
             onClick={() => {
               setMessages([...messages, text]);
