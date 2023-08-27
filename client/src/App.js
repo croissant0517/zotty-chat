@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { io } from "socket.io-client";
+
 import styles from "./App.module.scss";
 import { io } from "socket.io-client";
 // import Message from "./components/message";
@@ -19,12 +21,9 @@ export function App() {
   useEffect(() => {
     socket.connect();
 
-    //   socket.on("chat message", (msg) => {
-    //     console.log({ msg }, messages);
-    //     setMessages([...messages, msg]);
-    //   });
     socket.on("chat message", (msg) => {
-      setMessages((prev) => [...prev, msg]);
+      console.log("message: " + msg);
+      setMessages((messages) => [...messages, msg]);
     });
   }, []);
 
