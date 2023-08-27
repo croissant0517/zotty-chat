@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import Button from "@mui/material/Button";
 import { io } from "socket.io-client";
 
 import styles from "./App.module.scss";
@@ -86,6 +87,7 @@ export function App() {
           >
             送出
           </Button>
+<<<<<<< Updated upstream
           <Button
             onClick={() => {
               disconnect();
@@ -125,6 +127,10 @@ export function App() {
               </Button>
             </DialogContent>
           </Dialog>
+=======
+          <Button onClick={() => disconnect()}>離開聊天室</Button>
+          <Button onClick={() => connect()}>進入聊天室</Button>
+>>>>>>> Stashed changes
         </div>
       </div>
     </div>
