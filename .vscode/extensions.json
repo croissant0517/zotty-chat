@@ -1,0 +1,7 @@
+/** 建議安裝vscode外掛程式 */
+{
+  "recommendations": [
+    /** 排版外掛 */
+    "esbenp.prettier-vscode"
+  ]
+}
