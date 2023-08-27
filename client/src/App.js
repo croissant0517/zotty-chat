@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Button from "@mui/material/Button";
 import { io } from "socket.io-client";
 
@@ -23,6 +23,7 @@ export function App() {
   const [text, setText] = useState("");
   const [messages, setMessages] = useState([]);
   const [open, setOpen] = useState(true);
+  const messageRef = useRef(null);
 
   const [userName, setUserName] = useState("");
 
@@ -33,6 +34,12 @@ export function App() {
       setMessages((messages) => [...messages, msg]);
     });
   }, []);
+
+  useEffect(() => {
+    if (messageRef.current) {
+      messageRef.current.scrollTop = messageRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const disconnect = () => {
     socket.disconnect();
@@ -49,7 +56,7 @@ export function App() {
       <h1 className={styles.test}>Hello world!</h1>
       <div className={styles.chatWrapper}>
         <div className={styles.chatBox}>
-          <div>
+          <div ref={messageRef}>
             {messages.map((item, index) => {
               return (
                 <div
