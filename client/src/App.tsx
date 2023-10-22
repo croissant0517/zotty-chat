@@ -2,33 +2,30 @@ import React, { useEffect, useState, useRef } from "react";
 import Button from "@mui/material/Button";
 import { io } from "socket.io-client";
 
-import styles from "./App.module.scss";
-import { io } from "socket.io-client";
-import { Button } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 
+import styles from "./App.module.scss";
+
 // import Message from "./components/message";
 
-const URL =
-  process.env.NODE_ENV === "production"
-    ? undefined
-    : "http://192.168.0.121:8000/";
-// :"http://localhost:8000/";
+const URL: string =
+  // process.env.NODE_ENV === "production" ? "" : "http://192.168.0.121:8000/";
+  process.env.NODE_ENV === "production" ? "" : "http://localhost:8000/";
 export const socket = io(URL, {
   autoConnect: false,
 });
 
 export function App() {
   const [text, setText] = useState("");
-  const [messages, setMessages] = useState([]);
+  const [messages, setMessages] = useState<Array<string>>([]);
   const [open, setOpen] = useState(true);
-  const messageRef = useRef(null);
+  const messageRef = useRef<HTMLDivElement>(null);
 
   const [userName, setUserName] = useState("");
 
   useEffect(() => {
-    // socket.connect();
+    socket.connect();
 
     socket.on("chat message", (msg) => {
       setMessages((messages) => [...messages, msg]);
@@ -82,7 +79,7 @@ export function App() {
                 setText("");
               }
             }}
-            onCompositionEnd={(e) => {
+            onCompositionEnd={(e: any) => {
               if (e.key === "Enter") return;
             }}
           />
